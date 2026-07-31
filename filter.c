@@ -47,14 +47,14 @@ int main (int argc, char *argv[])
 	
 
 	str = malloc (sizeof (char) * (	BUFFER_SIZE + 1));
-	if (!malloc)
+	if (!str)
 	{
 		perror("Error: ");
 		return (1);
 	}
 
 	n = read(0, str, BUFFER_SIZE);
-	if (!read)
+	if (!n)
 	{
 		perror("Error: ");
 		free(str);
@@ -74,7 +74,7 @@ int main (int argc, char *argv[])
 		j = 0;
 		if (str[i] == s[j])
 		{
-			while ((str[i + j] != '\0' || str[i + j] !='\n)' && s[j] != '\0'))
+			while (str[i + j] == s[j])
 				++j;
 			if (s[j] == '\0')
 			{
@@ -88,16 +88,17 @@ int main (int argc, char *argv[])
 			}
 			else
 			{
-				write (1, &s[i], 1);
+				write (1, &str[i], 1);
 				++i;
 			}
 		}
 		else
 		{
-			write (1, &s[i], 1);
+			write (1, &str[i], 1);
 			++i;
 		}
-	}	
+	}
+	free(str);	
 	return (0);
 }
 

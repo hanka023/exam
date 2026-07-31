@@ -63,6 +63,7 @@ int main (int argc, char *argv[])
 		}
 		str[n] = '\0';
 		i = 0;
+		
 		/* * * * * * * L O G I K A * * * * * * */
 
 		while (str[i] != '\0')

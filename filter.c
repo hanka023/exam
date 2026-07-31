@@ -46,44 +46,50 @@ int main (int argc, char *argv[])
 		return (1);
 	
 
+	
+
 	str = malloc (sizeof (char) * (	BUFFER_SIZE + 1));
 	if (!str)
 	{
 		perror("Error: ");
 		return (1);
 	}
-
-	n = read(0, str, BUFFER_SIZE);
-	if (n < 0)
-	{
-		perror("Error: ");
-		free(str);
-		return(1);
-	}
-	str[n] = '\0';
-
 	s = argv[1];
-	i = 0;
-	j = 0;
-	len = 0;
 
-	/* * * * * * * L O G I K A * * * * * * */
-
-	while (str[i] != '\0')
-	{	
-		j = 0;
-		if (str[i] == s[j])
+	while ((n = read(0, str, BUFFER_SIZE)) > 0)
+	{
+		if (n < 0)
 		{
-			while (s[j] != '\0' && str[i + j] == s[j])
-				++j;
-			if (s[j] == '\0')
+			perror("Error: ");
+			free(str);
+			return(1);
+		}
+		str[n] = '\0';
+		i = 0;
+		/* * * * * * * L O G I K A * * * * * * */
+
+		while (str[i] != '\0')
+		{	
+			j = 0;
+			len = 0;
+			if (str[i] == s[j])
 			{
-				len = j;
-				i = i + j;
-				while (len > 0)
+				while (s[j] != '\0' && str[i + j] == s[j])
+					++j;
+				if (s[j] == '\0')
 				{
-					write (1, "*", 1);
-					--len;
+					len = j;
+					i = i + j;
+					while (len > 0)
+					{
+						write (1, "*", 1);
+						--len;
+					}
+				}
+				else
+				{
+					write (1, &str[i], 1);
+					++i;
 				}
 			}
 			else
@@ -91,11 +97,6 @@ int main (int argc, char *argv[])
 				write (1, &str[i], 1);
 				++i;
 			}
-		}
-		else
-		{
-			write (1, &str[i], 1);
-			++i;
 		}
 	}
 	free(str);	

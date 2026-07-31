@@ -69,7 +69,7 @@ int main (int argc, char *argv[])
 
 	/* * * * * * * L O G I K A * * * * * * */
 
-	while (str[i] != '\0')
+	while (s[j] != '\0' && str[i] != '\0')
 	{	
 		j = 0;
 		if (str[i] == s[j])

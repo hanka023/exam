@@ -54,7 +54,7 @@ int main (int argc, char *argv[])
 	}
 
 	n = read(0, str, BUFFER_SIZE);
-	if (!n)
+	if (n < 0)
 	{
 		perror("Error: ");
 		free(str);

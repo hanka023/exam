@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define BUFFER_SIZE 10000
+#define BUFFER_SIZE 1024
 
 
 int main (int argc, char *argv[])
@@ -45,9 +45,6 @@ int main (int argc, char *argv[])
 	if (argc != 2 || argv [1][0] == '\0')
 		return (1);
 	
-
-	
-
 	str = malloc (sizeof (char) * (	BUFFER_SIZE + 1));
 	if (!str)
 	{

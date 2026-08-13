@@ -30,6 +30,7 @@
 #include <string.h>
 
 #define BUFFER_SIZE 1024
+#define MAX_SIZE 100000
 
 
 int main (int argc, char *argv[])
@@ -39,29 +40,34 @@ int main (int argc, char *argv[])
 	int		i;
 	int		j;
 	int		len;
+	int		line_len = 0;
 	
-	ssize_t n;
+	ssize_t n = 1;  // !!!!!musi byt  n=1 ne n = 0 !!!!!!!
 
 	if (argc != 2 || argv [1][0] == '\0')
 		return (1);
 	
-	str = malloc (sizeof (char) * (	BUFFER_SIZE + 1));
+	str = malloc (sizeof (char) * (	MAX_SIZE + 1));
 	if (!str)
 	{
-		perror("Error: ");
+		perror("Error ");
 		return (1);
 	}
 	s = argv[1];
-
-	while ((n = read(0, str, BUFFER_SIZE)) > 0)
+	
+	
+	while (n > 0 && line_len < MAX_SIZE)
 	{
+		n = read(0, &str[line_len], BUFFER_SIZE);
 		if (n < 0)
 		{
-			perror("Error: ");
+			perror("Error");
 			free(str);
 			return(1);
 		}
-		str[n] = '\0';
+		line_len = line_len + n;
+	}
+		str[line_len] = '\0';
 		i = 0;
 		
 		/* * * * * * * L O G I K A * * * * * * */
@@ -70,24 +76,17 @@ int main (int argc, char *argv[])
 		{	
 			j = 0;
 			len = 0;
-			if (str[i] == s[j])
+	
+			while (s[j] != '\0' && str[i + j] == s[j])
+				++j;
+			if (s[j] == '\0')
 			{
-				while (s[j] != '\0' && str[i + j] == s[j])
-					++j;
-				if (s[j] == '\0')
+				len = j;
+				i = i + j;
+				while (len > 0)
 				{
-					len = j;
-					i = i + j;
-					while (len > 0)
-					{
-						write (1, "*", 1);
-						--len;
-					}
-				}
-				else
-				{
-					write (1, &str[i], 1);
-					++i;
+					write (1, "*", 1);
+					--len;
 				}
 			}
 			else
@@ -96,7 +95,6 @@ int main (int argc, char *argv[])
 				++i;
 			}
 		}
-	}
 	free(str);	
 	return (0);
 }

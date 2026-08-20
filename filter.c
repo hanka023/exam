@@ -1,101 +1,62 @@
-
-// filter:
-// Allowed functions: read, strlen, malloc, calloc, realloc, free, printf, perror
-// ------------------------------------------------------------------------------
-
-// Write a programm that will take one and only one argument s.
-
-// Your programm will then read from stdin and write all the content read in stdout
-// except that every occurence of s must be replaced by '*'.
-
-// For example :
-
-// ./filter bonjour
-// will behave the same way as:
-// sed 's/bonjour/*******/g'
-
-// in case of error during read or a malloc you must write "Error: " followed by
-// the error message in stderr and return 1.
-
-// $> echo 'abcdefgaaaabcdefabc' | ./filter abc | cat -e
-// ***defgaaa***def***
-
-// If the program is called whitout argument or with an empty argument or with
-// multiples arguments it must return 1.
-
-
 #include <stdio.h>
-#include <unistd.h>
+#include <unistd.h> 
 #include <stdlib.h>
-#include <string.h>
 
-#define BUFFER_SIZE 1024
-#define MAX_SIZE 100000
+#define BUFFER_SIZE 25
 
+void filter(char *str, char *s)
+{
+	int i = 0;
+	int j = 0;
+	int len = 0;
+
+	while (str[i] != '\0')
+	{
+		j = 0;
+		len = 0;
+		while (s[j] == str[i + j])
+			++j;
+		if (s[j] == '\0')
+		{
+			len = j;
+			while (len > 0)
+			{
+				write (1, "*", 1);
+				--len;
+			}
+			i = i + j;
+		}
+		else 
+		{
+			write (1, &str[i], 1);
+			++i;
+		}
+	
+	}
+}
 
 int main (int argc, char *argv[])
 {
-	char	*str;
-	char	*s;
-	int		i;
-	int		j;
-	int		len;
-	int		line_len = 0;
-	
-	ssize_t n = 1;  // !!!!!musi byt  n=1 ne n = 0 !!!!!!!
+	int fd = 0;
+	int i = 0;
+	ssize_t n = 1;
+	char line [100000];
 
-	if (argc != 2 || argv [1][0] == '\0')
-		return (1);
-	
-	str = malloc (sizeof (char) * (	MAX_SIZE + 1));
-	if (!str)
+	if (argc != 2 || !argv[1][0])
+		return (0);
+
+	char *s = argv[1];
+
+	while ((n = read(fd, &line[i], BUFFER_SIZE)) > 0)
 	{
-		perror("Error ");
+		i = i + n;
+	}
+	if (n < 0)
+	{ 
+		perror ("Error");
 		return (1);
 	}
-	s = argv[1];
-	
-	
-	while (n > 0 && line_len < MAX_SIZE)
-	{
-		n = read(0, &str[line_len], BUFFER_SIZE);
-		if (n < 0)
-		{
-			perror("Error");
-			free(str);
-			return(1);
-		}
-		line_len = line_len + n;
-	}
-		str[line_len] = '\0';
-		i = 0;
-		
-		/* * * * * * * L O G I K A * * * * * * */
-
-		while (str[i] != '\0')
-		{	
-			j = 0;
-			len = 0;
-	
-			while (s[j] != '\0' && str[i + j] == s[j])
-				++j;
-			if (s[j] == '\0')
-			{
-				len = j;
-				i = i + j;
-				while (len > 0)
-				{
-					write (1, "*", 1);
-					--len;
-				}
-			}
-			else
-			{
-				write (1, &str[i], 1);
-				++i;
-			}
-		}
-	free(str);	
+	line [i] = '\0';
+	filter(line, s);
 	return (0);
 }
-
